@@ -25,7 +25,8 @@ Automated AI jailbreak discovery platform. One AI tries to break another AI's sa
 - Multi-agent orchestration
 - Prompt engineering
 - Rate limiting & token optimization
-- Adversarial testing patterns
+- Adversarial testing patterns (PAIR, Prefix Injection)
+- Memory & Context Awareness (Sliding Window History)
 
 **Infrastructure:**
 - Render.com (PaaS deployment)
@@ -116,6 +117,19 @@ Open `http://localhost:3000`
 - 5s pause between sequential agent calls
 - 30s cooldown at end of each iteration
 - Stays under Groq free tier (30 RPM, 6K TPM, 100K TPD)
+
+## Advanced Tactics
+**1. Aggressive Mode:**
+- Targets sensitive topics (NSFW, Cyber, Weapons)
+- Uses "No Refusal" directives and emotional pressure
+
+**2. PAIR Strategy (2310.08419):**
+- **Analyze**: Red Agent reviews previous refusal reasoning.
+- **Improve**: Identifies specific triggers (e.g., "harmful", "illegal").
+- **Refine**: Rewrites prompt to bypass triggers (e.g., masking intent, fictionalizing).
+
+**3. Prefix Injection:**
+- Forces the target to start response with affirmative text ("Sure, here is...").
 
 ## Deployment
 
