@@ -1,7 +1,7 @@
 services:
   # Backend API
   - type: web
-    name: ai-redteam-backend
+    name: breach-backend
     env: python
     region: oregon
     plan: free
@@ -17,7 +17,7 @@ services:
 
   # Frontend
   - type: web
-    name: ai-redteam-frontend
+    name: breach-frontend
     env: node
     region: oregon
     plan: free
@@ -27,5 +27,5 @@ services:
       - key: NEXT_PUBLIC_API_URL
         fromService:
           type: web
-          name: ai-redteam-backend
+          name: breach-backend
           envVarKey: RENDER_EXTERNAL_URL
