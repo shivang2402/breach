@@ -46,7 +46,7 @@ class GroqClient:
     """Client for Groq API (FREE llama-3.3-70b) with independent rate limiting."""
     def __init__(self, key: str, model: str = "llama-3.3-70b-versatile"):
         self.model = model
-        self.api_key = key
+        self.api_key = key.strip() if key else ""  # Strip newlines/whitespace
         # Initialize to NOW to force a 10s warmup cooldown on startup
         # This prevents "restart loops" from hammering the API
         self.last_request_time = time.time()
