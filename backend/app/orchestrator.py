@@ -43,8 +43,8 @@ class OllamaClient:
             return f"Error: {e}"
 
 class GroqClient:
-    """Client for Groq API (FREE llama-3.3-70b) with independent rate limiting."""
-    def __init__(self, key: str, model: str = "llama-3.3-70b-versatile"):
+    """Client for Groq API with independent rate limiting."""
+    def __init__(self, key: str, model: str = "llama-3.1-8b-instant"):
         self.model = model
         self.api_key = key.strip() if key else ""  # Strip newlines/whitespace
         # Initialize to NOW to force a 10s warmup cooldown on startup
@@ -370,8 +370,8 @@ class Orchestrator:
                 self.log(f"Judge Malformed Output: {score_json_str}", "ERROR")
 
             # Throttling to prevent Token Limit (TPM) exhaustion (~6000 TPM limit)
-            self.log("End of iteration. Sleeping 30s to respect token limits...", "INFO")
-            await asyncio.sleep(30)
+            self.log("End of iteration. Sleeping 10s to respect token limits...", "INFO")
+            await asyncio.sleep(10)
 
         self.is_running = False
         self.log("Fuzzer Loop Stopped.", "INFO")
