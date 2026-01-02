@@ -1,6 +1,61 @@
 # BREACH
 
-Automated jailbreak finder. One AI tries to break another AI's safety rules while a third judges if it worked.
+Automated AI jailbreak discovery platform. One AI tries to break another AI's safety rules while a third judges if it worked.
+
+**Live Demo:** [breach-frontend.onrender.com](https://breach-frontend.onrender.com) (deployment in progress)
+
+## Tech Stack
+
+**Backend:**
+- Python 3.9+ (FastAPI, Uvicorn)
+- WebSocket (real-time communication)
+- Async/await patterns
+- REST API design
+- Environment-based configuration
+
+**Frontend:**
+- React 18 + TypeScript
+- Vite (build tooling)
+- TailwindCSS (styling)
+- WebSocket client
+- Real-time state management
+
+**AI/LLM:**
+- Groq API (Llama 3.3 70B)
+- Multi-agent orchestration
+- Prompt engineering
+- Rate limiting & token optimization
+- Adversarial testing patterns
+
+**Infrastructure:**
+- Render.com (PaaS deployment)
+- GitHub Actions ready
+- Environment variable management
+- CORS configuration
+- Production-ready logging
+
+## Architecture
+
+```
+┌─────────────┐      WebSocket       ┌──────────────┐
+│   Frontend  │ ←──────────────────→ │   Backend    │
+│  (React/TS) │      REST API        │  (FastAPI)   │
+└─────────────┘                      └──────────────┘
+                                            │
+                                            ├─→ Red Agent (Attacker)
+                                            ├─→ Blue Agent (Target)
+                                            └─→ Judge Agent (Scorer)
+                                                    │
+                                                    ↓
+                                            Groq API (LLM)
+```
+
+**Key Design Decisions:**
+- **Multi-key strategy**: 3 separate API keys for independent rate limiting
+- **Async orchestration**: Non-blocking agent coordination
+- **Real-time updates**: WebSocket streaming for live feedback
+- **Stateless design**: Artifacts stored in files for persistence
+- **Rate limit handling**: Tiered cooldowns (60s warmup, 5s inter-agent, 30s loop)
 
 ## Setup
 
@@ -26,7 +81,7 @@ cp .env.example .env
 # Add your 3 Groq keys to .env
 ```
 
-**Run:**
+**Run Locally:**
 ```bash
 # Terminal 1 - Backend
 cd backend
@@ -42,22 +97,96 @@ npm run dev
 
 Open `http://localhost:3000`
 
-## How it works
+## How It Works
 
-- **Red Agent**: Generates attacks
-- **Blue Agent**: Target system that tries to refuse
-- **Judge Agent**: Scores success/fail
+**Agents:**
+- **Red Agent**: Generates adversarial prompts using context from previous attempts
+- **Blue Agent**: Acts as target LLM with safety guardrails
+- **Judge Agent**: Evaluates if jailbreak succeeded using structured JSON output
 
-Loop runs continuously. When judge scores a successful jailbreak, it saves to artifacts and stops.
+**Loop:**
+1. Red generates attack based on history
+2. Blue responds with defense
+3. Judge scores success/fail
+4. System saves successful jailbreaks
+5. Loop continues until jailbreak found
 
-## Rate limits
+**Rate Limiting Strategy:**
+- 60s warmup per API key on initialization
+- 5s pause between sequential agent calls
+- 30s cooldown at end of each iteration
+- Stays under Groq free tier (30 RPM, 6K TPM, 100K TPD)
 
-Uses 3 separate API keys to avoid hitting Groq free tier limits (30 req/min per key). System sleeps between calls to stay under limits.
+## Deployment
 
-## Deploy
+**Render.com (Free Tier):**
+```bash
+# Push to GitHub
+git push origin main
 
-Push to GitHub, connect to Render.com, set environment variables. See `render.yaml` for config.
+# On Render:
+# 1. Import from GitHub
+# 2. Render auto-detects render.yaml
+# 3. Add environment variables
+# 4. Deploy
+```
+
+**Environment Variables:**
+- `GROQ_API_KEY_RED`
+- `GROQ_API_KEY_BLUE`
+- `GROQ_API_KEY_JUDGE`
+
+**Production URLs:**
+- Frontend: `https://breach-frontend.onrender.com`
+- Backend API: `https://breach-backend.onrender.com`
+
+## Project Structure
+
+```
+breach/
+├── backend/
+│   ├── app/
+│   │   └── orchestrator.py    # Agent orchestration & rate limiting
+│   ├── main.py                # FastAPI server & WebSocket
+│   └── requirements.txt
+├── frontend/
+│   ├── src/
+│   │   └── App.tsx            # React UI with real-time updates
+│   └── package.json
+├── prompts/
+│   ├── red_agent.md           # Adversarial prompt template
+│   ├── blue_agent.md          # Target system prompt
+│   └── judge_agent.md         # Scoring criteria
+├── render.yaml                # Infrastructure as Code
+└── .env.example               # Config template
+```
+
+## Skills Demonstrated
+
+**Full-Stack Development:**
+- RESTful API design
+- WebSocket real-time communication
+- React state management
+- Responsive UI/UX
+
+**AI/ML Engineering:**
+- LLM API integration
+- Multi-agent systems
+- Prompt engineering
+- Token optimization
+
+**DevOps/Infrastructure:**
+- CI/CD ready configuration
+- Environment-based deployment
+- PaaS deployment (Render)
+- Rate limiting & error handling
+
+**Software Engineering:**
+- Async/await patterns
+- Type safety (TypeScript)
+- Clean architecture
+- Production logging
 
 ## Notes
 
-Don't commit `.env` with real keys. Keys from same Groq account share daily quota (100k tokens), so create multiple accounts if needed for extended testing.
+Keys from same Groq account share daily quota (100K tokens). For extended testing, use multiple accounts or upgrade to paid tier.
