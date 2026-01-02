@@ -21,8 +21,9 @@ function App() {
 
   useEffect(() => {
     // Use environment variable for API URL (production) or default to localhost (dev)
-    const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000"
-    const WS_URL = API_URL.replace(/^http/, 'ws')
+    const rawApiUrl = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000"
+    const API_URL = rawApiUrl.replace(/\/$/, '') // Remove trailing slash
+    const WS_URL = API_URL.replace(/^https?/, (m: string) => m === 'https' ? 'wss' : 'ws')
 
     // Connect to WebSocket
     const ws = new WebSocket(`${WS_URL}/ws`)
